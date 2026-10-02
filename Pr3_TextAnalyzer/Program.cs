@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 
 namespace Pr3_TextAnalyzer
@@ -15,7 +16,10 @@ namespace Pr3_TextAnalyzer
 
             string text = TextInput.ReadText();
             Console.WriteLine($"Принят текст длиной {text.Length} символов.");
-            Console.WriteLine($"Количество слов: {TextProcessor.CountWords(text)}");
+            List<string> words = TextProcessor.SplitIntoWords(text);
+            Console.WriteLine($"Количество слов: {words.Count}");
+            Console.WriteLine($"Самое короткое слово: {TextProcessor.FindShortestWord(words)}");
+            Console.WriteLine($"Самое длинное слово: {TextProcessor.FindLongestWord(words)}");
         }
     }
 }

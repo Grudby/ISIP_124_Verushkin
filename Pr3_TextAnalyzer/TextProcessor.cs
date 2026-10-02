@@ -53,5 +53,47 @@ namespace Pr3_TextAnalyzer
         {
             return SplitIntoWords(text).Count;
         }
+
+        /// <summary>
+        /// Самое короткое слово. При равной длине берётся первое встретившееся.
+        /// </summary>
+        public static string FindShortestWord(List<string> words)
+        {
+            if (words.Count == 0)
+            {
+                return string.Empty;
+            }
+
+            string shortest = words[0];
+            for (int i = 1; i < words.Count; i++)
+            {
+                if (words[i].Length < shortest.Length)
+                {
+                    shortest = words[i];
+                }
+            }
+            return shortest;
+        }
+
+        /// <summary>
+        /// Самое длинное слово. При равной длине берётся первое встретившееся.
+        /// </summary>
+        public static string FindLongestWord(List<string> words)
+        {
+            if (words.Count == 0)
+            {
+                return string.Empty;
+            }
+
+            string longest = words[0];
+            for (int i = 1; i < words.Count; i++)
+            {
+                if (words[i].Length > longest.Length)
+                {
+                    longest = words[i];
+                }
+            }
+            return longest;
+        }
     }
 }
