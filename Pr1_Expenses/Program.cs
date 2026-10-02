@@ -40,6 +40,9 @@ namespace Pr1_Expenses
                     case "3":
                         BubbleSortByPrice();
                         break;
+                    case "4":
+                        ConvertCurrency();
+                        break;
                     case "0":
                         running = false;
                         Console.WriteLine("Выход из программы.");
@@ -133,6 +136,7 @@ namespace Pr1_Expenses
             Console.WriteLine("1. Вывод данных");
             Console.WriteLine("2. Статистика (среднее, максимальное, минимальное, сумма)");
             Console.WriteLine("3. Сортировка по цене (пузырьковая сортировка)");
+            Console.WriteLine("4. Конвертация валюты");
             Console.WriteLine("0. Выход");
             Console.Write("Выберите пункт меню: ");
         }
@@ -201,6 +205,75 @@ namespace Pr1_Expenses
 
             Console.WriteLine("Список отсортирован.");
             PrintData();
+        }
+
+        // Конвертация валюты: пользователь вводит курс или выбирает из списка
+        static void ConvertCurrency()
+        {
+            if (expenses.Count == 0)
+            {
+                Console.WriteLine("Список трат пуст.");
+                return;
+            }
+
+            Dictionary<string, double> rates = new Dictionary<string, double>
+            {
+                { "USD", 82.0 },
+                { "EUR", 95.0 },
+                { "CNY", 11.4 }
+            };
+
+            Console.WriteLine();
+            Console.WriteLine("Выберите способ конвертации:");
+            Console.WriteLine("1. Выбрать валюту из списка (USD, EUR, CNY)");
+            Console.WriteLine("2. Ввести курс вручную");
+            Console.Write("Ваш выбор: ");
+            string choice = Console.ReadLine();
+
+            double rate;
+            string currencyName;
+
+            if (choice == "1")
+            {
+                Console.WriteLine("Доступные валюты: USD, EUR, CNY");
+                Console.Write("Введите код валюты: ");
+                string code = Console.ReadLine()?.Trim().ToUpper();
+
+                if (code == null || !rates.ContainsKey(code))
+                {
+                    Console.WriteLine("Неизвестная валюта.");
+                    return;
+                }
+
+                rate = rates[code];
+                currencyName = code;
+            }
+            else if (choice == "2")
+            {
+                Console.Write("Введите курс (сколько рублей за 1 единицу валюты): ");
+                string rateInput = Console.ReadLine();
+                if ((!double.TryParse(rateInput, NumberStyles.Any, CultureInfo.InvariantCulture, out rate)
+                    && !double.TryParse(rateInput, NumberStyles.Any, CultureInfo.CurrentCulture, out rate))
+                    || rate <= 0)
+                {
+                    Console.WriteLine("Некорректный курс.");
+                    return;
+                }
+                currencyName = "ед. валюты";
+            }
+            else
+            {
+                Console.WriteLine("Неверный выбор.");
+                return;
+            }
+
+            Console.WriteLine();
+            Console.WriteLine($"Траты в {currencyName}:");
+            foreach (Expense expense in expenses)
+            {
+                double converted = expense.Amount / rate;
+                Console.WriteLine($"{expense.Name} - {converted:F2} {currencyName}");
+            }
         }
     }
 }
