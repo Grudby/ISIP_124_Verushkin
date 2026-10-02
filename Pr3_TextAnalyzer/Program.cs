@@ -24,6 +24,13 @@ namespace Pr3_TextAnalyzer
             TextProcessor.CountVowelsAndConsonants(text, out int vowels, out int consonants);
             Console.WriteLine($"Гласных букв: {vowels}");
             Console.WriteLine($"Согласных букв: {consonants}");
+
+            Console.WriteLine("Частота букв:");
+            List<KeyValuePair<char, int>> frequency = TextProcessor.GetLetterFrequency(text);
+            foreach (KeyValuePair<char, int> pair in frequency)
+            {
+                Console.WriteLine($"  {pair.Key} - {pair.Value}");
+            }
         }
     }
 }

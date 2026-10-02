@@ -175,5 +175,50 @@ namespace Pr3_TextAnalyzer
         {
             return (c >= 'а' && c <= 'я') || c == 'ё' || (c >= 'a' && c <= 'z');
         }
+
+        /// <summary>
+        /// Частота встречаемости каждой буквы (регистр не учитывается).
+        /// Результат отсортирован по убыванию частоты, при равенстве - по алфавиту.
+        /// </summary>
+        public static List<KeyValuePair<char, int>> GetLetterFrequency(string text)
+        {
+            Dictionary<char, int> counts = new Dictionary<char, int>();
+
+            for (int i = 0; i < text.Length; i++)
+            {
+                char c = char.ToLower(text[i]);
+                if (!char.IsLetter(c))
+                {
+                    continue;
+                }
+
+                if (counts.ContainsKey(c))
+                {
+                    counts[c]++;
+                }
+                else
+                {
+                    counts[c] = 1;
+                }
+            }
+
+            List<KeyValuePair<char, int>> result = new List<KeyValuePair<char, int>>();
+            foreach (KeyValuePair<char, int> pair in counts)
+            {
+                result.Add(pair);
+            }
+
+            result.Sort(CompareByFrequency);
+            return result;
+        }
+
+        private static int CompareByFrequency(KeyValuePair<char, int> a, KeyValuePair<char, int> b)
+        {
+            if (a.Value != b.Value)
+            {
+                return b.Value.CompareTo(a.Value);
+            }
+            return a.Key.CompareTo(b.Key);
+        }
     }
 }
