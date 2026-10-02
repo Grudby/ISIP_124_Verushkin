@@ -42,6 +42,9 @@ namespace Pr2_StoreInventory
                         case "4":
                             SellProduct();
                             break;
+                        case "5":
+                            SearchProducts();
+                            break;
                         case "6":
                             ShowAllProducts();
                             break;
@@ -79,6 +82,7 @@ namespace Pr2_StoreInventory
             Console.WriteLine("2. Удалить товар");
             Console.WriteLine("3. Заказать поставку товара");
             Console.WriteLine("4. Продать товар");
+            Console.WriteLine("5. Поиск товара (по коду, названию, категории)");
             Console.WriteLine("6. Показать все товары");
             Console.WriteLine("0. Выход");
             Console.Write("Выберите пункт меню: ");
@@ -240,6 +244,48 @@ namespace Pr2_StoreInventory
             Sale sale = new Sale { Product = product, Quantity = amount, TotalPrice = total, Date = DateTime.Now };
             salesHistory.Push(sale);
             Console.WriteLine($"Продано {amount} шт. \"{product.Name}\" на сумму {total:0.00}.");
+        }
+
+        static void SearchProducts()
+        {
+            Console.WriteLine("--- Поиск товара ---");
+            Console.WriteLine("1. По коду");
+            Console.WriteLine("2. По названию");
+            Console.WriteLine("3. По категории");
+            Console.Write("Выберите способ поиска: ");
+            string choice = Console.ReadLine();
+
+            List<Product> results;
+
+            switch (choice)
+            {
+                case "1":
+                    int code = ReadNonNegativeInt("Введите код товара: ");
+                    results = products.Where(p => p.Code == code).ToList();
+                    break;
+                case "2":
+                    string name = ReadNonEmptyString("Введите название (или часть названия): ");
+                    results = products.Where(p => p.Name.IndexOf(name, StringComparison.OrdinalIgnoreCase) >= 0).ToList();
+                    break;
+                case "3":
+                    Category category = ReadCategory();
+                    results = products.Where(p => p.Category == category).ToList();
+                    break;
+                default:
+                    Console.WriteLine("Некорректный выбор способа поиска.");
+                    return;
+            }
+
+            if (results.Count == 0)
+            {
+                Console.WriteLine("Товары не найдены.");
+            }
+            else
+            {
+                Console.WriteLine("Найденные товары:");
+                foreach (Product p in results)
+                    Console.WriteLine(p);
+            }
         }
     }
 }
