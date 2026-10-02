@@ -12,6 +12,9 @@ namespace Pr3_TextAnalyzer
 
             Console.WriteLine("Практическая работа: анализ текста");
             Console.WriteLine("Верушкин Василий Андреевич, ИСиП-124");
+
+            string text = TextInput.ReadText();
+            Console.WriteLine($"Принят текст длиной {text.Length} символов.");
         }
     }
 }
