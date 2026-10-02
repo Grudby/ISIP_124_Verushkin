@@ -43,6 +43,9 @@ namespace Pr1_Expenses
                     case "4":
                         ConvertCurrency();
                         break;
+                    case "5":
+                        SearchByName();
+                        break;
                     case "0":
                         running = false;
                         Console.WriteLine("Выход из программы.");
@@ -137,6 +140,7 @@ namespace Pr1_Expenses
             Console.WriteLine("2. Статистика (среднее, максимальное, минимальное, сумма)");
             Console.WriteLine("3. Сортировка по цене (пузырьковая сортировка)");
             Console.WriteLine("4. Конвертация валюты");
+            Console.WriteLine("5. Поиск по названию");
             Console.WriteLine("0. Выход");
             Console.Write("Выберите пункт меню: ");
         }
@@ -273,6 +277,33 @@ namespace Pr1_Expenses
             {
                 double converted = expense.Amount / rate;
                 Console.WriteLine($"{expense.Name} - {converted:F2} {currencyName}");
+            }
+        }
+
+        static void SearchByName()
+        {
+            if (expenses.Count == 0)
+            {
+                Console.WriteLine("Список трат пуст.");
+                return;
+            }
+
+            Console.Write("Введите название или часть названия для поиска: ");
+            string query = Console.ReadLine()?.Trim().ToLower() ?? "";
+
+            List<Expense> results = expenses.Where(e => e.Name.ToLower().Contains(query)).ToList();
+
+            if (results.Count == 0)
+            {
+                Console.WriteLine("Ничего не найдено.");
+                return;
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("Результаты поиска:");
+            foreach (Expense expense in results)
+            {
+                Console.WriteLine($"{expense.Name} - {expense.Amount:F2} руб.");
             }
         }
     }
