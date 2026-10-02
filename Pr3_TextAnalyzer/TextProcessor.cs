@@ -136,5 +136,44 @@ namespace Pr3_TextAnalyzer
         {
             return c == '.' || c == '!' || c == '?' || c == '…';
         }
+
+        // Гласные русского и английского алфавита (в нижнем регистре)
+        private const string Vowels = "аеёиоуыэюяaeiouy";
+
+        // Ъ и Ь не являются ни гласными, ни согласными
+        private const string NeitherVowelNorConsonant = "ъь";
+
+        /// <summary>
+        /// Подсчёт гласных и согласных букв. Учитываются русский и английский алфавиты.
+        /// </summary>
+        public static void CountVowelsAndConsonants(string text, out int vowels, out int consonants)
+        {
+            vowels = 0;
+            consonants = 0;
+
+            for (int i = 0; i < text.Length; i++)
+            {
+                char c = char.ToLower(text[i]);
+
+                if (!IsRussianOrEnglishLetter(c))
+                {
+                    continue;
+                }
+
+                if (Vowels.IndexOf(c) >= 0)
+                {
+                    vowels++;
+                }
+                else if (NeitherVowelNorConsonant.IndexOf(c) < 0)
+                {
+                    consonants++;
+                }
+            }
+        }
+
+        private static bool IsRussianOrEnglishLetter(char c)
+        {
+            return (c >= 'а' && c <= 'я') || c == 'ё' || (c >= 'a' && c <= 'z');
+        }
     }
 }

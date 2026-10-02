@@ -21,6 +21,9 @@ namespace Pr3_TextAnalyzer
             Console.WriteLine($"Самое короткое слово: {TextProcessor.FindShortestWord(words)}");
             Console.WriteLine($"Самое длинное слово: {TextProcessor.FindLongestWord(words)}");
             Console.WriteLine($"Количество предложений: {TextProcessor.CountSentences(text)}");
+            TextProcessor.CountVowelsAndConsonants(text, out int vowels, out int consonants);
+            Console.WriteLine($"Гласных букв: {vowels}");
+            Console.WriteLine($"Согласных букв: {consonants}");
         }
     }
 }
