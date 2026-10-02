@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 
 namespace Pr1_Expenses
@@ -32,6 +33,9 @@ namespace Pr1_Expenses
                 {
                     case "1":
                         PrintData();
+                        break;
+                    case "2":
+                        ShowStatistics();
                         break;
                     case "0":
                         running = false;
@@ -124,6 +128,7 @@ namespace Pr1_Expenses
             Console.WriteLine();
             Console.WriteLine("Меню:");
             Console.WriteLine("1. Вывод данных");
+            Console.WriteLine("2. Статистика (среднее, максимальное, минимальное, сумма)");
             Console.WriteLine("0. Выход");
             Console.Write("Выберите пункт меню: ");
         }
@@ -136,6 +141,27 @@ namespace Pr1_Expenses
             {
                 Console.WriteLine($"{i + 1}. {expenses[i].Name} - {expenses[i].Amount:F2} руб.");
             }
+        }
+
+        static void ShowStatistics()
+        {
+            if (expenses.Count == 0)
+            {
+                Console.WriteLine("Список трат пуст.");
+                return;
+            }
+
+            double sum = expenses.Sum(e => e.Amount);
+            double avg = sum / expenses.Count;
+            double max = expenses.Max(e => e.Amount);
+            double min = expenses.Min(e => e.Amount);
+
+            Console.WriteLine();
+            Console.WriteLine("Статистика:");
+            Console.WriteLine($"Сумма: {sum:F2} руб.");
+            Console.WriteLine($"Среднее: {avg:F2} руб.");
+            Console.WriteLine($"Максимум: {max:F2} руб.");
+            Console.WriteLine($"Минимум: {min:F2} руб.");
         }
     }
 }
