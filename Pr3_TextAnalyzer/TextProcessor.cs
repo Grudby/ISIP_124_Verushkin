@@ -95,5 +95,46 @@ namespace Pr3_TextAnalyzer
             }
             return longest;
         }
+
+        /// <summary>
+        /// Количество предложений. Предложение заканчивается на '.', '!', '?' или '…';
+        /// группа знаков подряд ("?!", "...") считается одним концом предложения.
+        /// Хвост текста без знака в конце тоже считается предложением, если в нём есть буквы или цифры.
+        /// </summary>
+        public static int CountSentences(string text)
+        {
+            int count = 0;
+            bool hasContent = false;
+
+            for (int i = 0; i < text.Length; i++)
+            {
+                char c = text[i];
+
+                if (IsSentenceEnd(c))
+                {
+                    if (hasContent)
+                    {
+                        count++;
+                        hasContent = false;
+                    }
+                }
+                else if (char.IsLetterOrDigit(c))
+                {
+                    hasContent = true;
+                }
+            }
+
+            if (hasContent)
+            {
+                count++;
+            }
+
+            return count;
+        }
+
+        private static bool IsSentenceEnd(char c)
+        {
+            return c == '.' || c == '!' || c == '?' || c == '…';
+        }
     }
 }

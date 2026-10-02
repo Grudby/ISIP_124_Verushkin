@@ -20,6 +20,7 @@ namespace Pr3_TextAnalyzer
             Console.WriteLine($"Количество слов: {words.Count}");
             Console.WriteLine($"Самое короткое слово: {TextProcessor.FindShortestWord(words)}");
             Console.WriteLine($"Самое длинное слово: {TextProcessor.FindLongestWord(words)}");
+            Console.WriteLine($"Количество предложений: {TextProcessor.CountSentences(text)}");
         }
     }
 }
