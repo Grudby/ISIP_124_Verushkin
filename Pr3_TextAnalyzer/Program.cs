@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Text;
 
 namespace Pr3_TextAnalyzer
@@ -15,22 +14,10 @@ namespace Pr3_TextAnalyzer
             Console.WriteLine("Верушкин Василий Андреевич, ИСиП-124");
 
             string text = TextInput.ReadText();
-            Console.WriteLine($"Принят текст длиной {text.Length} символов.");
-            List<string> words = TextProcessor.SplitIntoWords(text);
-            Console.WriteLine($"Количество слов: {words.Count}");
-            Console.WriteLine($"Самое короткое слово: {TextProcessor.FindShortestWord(words)}");
-            Console.WriteLine($"Самое длинное слово: {TextProcessor.FindLongestWord(words)}");
-            Console.WriteLine($"Количество предложений: {TextProcessor.CountSentences(text)}");
-            TextProcessor.CountVowelsAndConsonants(text, out int vowels, out int consonants);
-            Console.WriteLine($"Гласных букв: {vowels}");
-            Console.WriteLine($"Согласных букв: {consonants}");
+            TextStatistics statistics = TextStatistics.Analyze(text);
 
-            Console.WriteLine("Частота букв:");
-            List<KeyValuePair<char, int>> frequency = TextProcessor.GetLetterFrequency(text);
-            foreach (KeyValuePair<char, int> pair in frequency)
-            {
-                Console.WriteLine($"  {pair.Key} - {pair.Value}");
-            }
+            Console.WriteLine();
+            statistics.Print();
         }
     }
 }
