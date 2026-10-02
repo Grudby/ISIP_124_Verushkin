@@ -37,6 +37,9 @@ namespace Pr1_Expenses
                     case "2":
                         ShowStatistics();
                         break;
+                    case "3":
+                        BubbleSortByPrice();
+                        break;
                     case "0":
                         running = false;
                         Console.WriteLine("Выход из программы.");
@@ -129,6 +132,7 @@ namespace Pr1_Expenses
             Console.WriteLine("Меню:");
             Console.WriteLine("1. Вывод данных");
             Console.WriteLine("2. Статистика (среднее, максимальное, минимальное, сумма)");
+            Console.WriteLine("3. Сортировка по цене (пузырьковая сортировка)");
             Console.WriteLine("0. Выход");
             Console.Write("Выберите пункт меню: ");
         }
@@ -162,6 +166,41 @@ namespace Pr1_Expenses
             Console.WriteLine($"Среднее: {avg:F2} руб.");
             Console.WriteLine($"Максимум: {max:F2} руб.");
             Console.WriteLine($"Минимум: {min:F2} руб.");
+        }
+
+        // Пузырьковая сортировка по цене
+        static void BubbleSortByPrice()
+        {
+            if (expenses.Count == 0)
+            {
+                Console.WriteLine("Список трат пуст.");
+                return;
+            }
+
+            Console.Write("Сортировать по возрастанию (1) или убыванию (2)? ");
+            string dirChoice = Console.ReadLine();
+            bool ascending = dirChoice != "2";
+
+            int n = expenses.Count;
+            for (int i = 0; i < n - 1; i++)
+            {
+                for (int j = 0; j < n - i - 1; j++)
+                {
+                    bool needSwap = ascending
+                        ? expenses[j].Amount > expenses[j + 1].Amount
+                        : expenses[j].Amount < expenses[j + 1].Amount;
+
+                    if (needSwap)
+                    {
+                        Expense temp = expenses[j];
+                        expenses[j] = expenses[j + 1];
+                        expenses[j + 1] = temp;
+                    }
+                }
+            }
+
+            Console.WriteLine("Список отсортирован.");
+            PrintData();
         }
     }
 }
