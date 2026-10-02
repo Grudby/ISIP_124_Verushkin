@@ -21,6 +21,27 @@ namespace Pr1_Expenses
 
             int count = ReadOperationsCount();
             ReadExpenses(count);
+
+            bool running = true;
+            while (running)
+            {
+                ShowMenu();
+                string choice = Console.ReadLine();
+
+                switch (choice)
+                {
+                    case "1":
+                        PrintData();
+                        break;
+                    case "0":
+                        running = false;
+                        Console.WriteLine("Выход из программы.");
+                        break;
+                    default:
+                        Console.WriteLine("Неверный пункт меню. Попробуйте снова.");
+                        break;
+                }
+            }
         }
 
         // Считываем количество операций от 2 до 40
@@ -96,6 +117,25 @@ namespace Pr1_Expenses
             }
 
             Console.WriteLine("Все траты успешно внесены.");
+        }
+
+        static void ShowMenu()
+        {
+            Console.WriteLine();
+            Console.WriteLine("Меню:");
+            Console.WriteLine("1. Вывод данных");
+            Console.WriteLine("0. Выход");
+            Console.Write("Выберите пункт меню: ");
+        }
+
+        static void PrintData()
+        {
+            Console.WriteLine();
+            Console.WriteLine("Список трат:");
+            for (int i = 0; i < expenses.Count; i++)
+            {
+                Console.WriteLine($"{i + 1}. {expenses[i].Name} - {expenses[i].Amount:F2} руб.");
+            }
         }
     }
 }
