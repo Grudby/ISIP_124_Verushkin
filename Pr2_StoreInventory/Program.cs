@@ -51,6 +51,9 @@ namespace Pr2_StoreInventory
                         case "7":
                             UndoLastSale();
                             break;
+                        case "8":
+                            ShowSalesReport();
+                            break;
                         case "0":
                             running = false;
                             break;
@@ -88,6 +91,7 @@ namespace Pr2_StoreInventory
             Console.WriteLine("5. Поиск товара (по коду, названию, категории)");
             Console.WriteLine("6. Показать все товары");
             Console.WriteLine("7. Отменить последнюю продажу");
+            Console.WriteLine("8. Отчёт о продажах");
             Console.WriteLine("0. Выход");
             Console.Write("Выберите пункт меню: ");
         }
@@ -303,6 +307,27 @@ namespace Pr2_StoreInventory
             Sale lastSale = salesHistory.Pop();
             lastSale.Product.Quantity += lastSale.Quantity;
             Console.WriteLine($"Продажа отменена: {lastSale.Quantity} шт. \"{lastSale.Product.Name}\" возвращены на склад.");
+        }
+
+        static void ShowSalesReport()
+        {
+            Console.WriteLine("--- Отчёт о продажах ---");
+            if (salesHistory.Count == 0)
+            {
+                Console.WriteLine("Продаж пока не было.");
+                return;
+            }
+            decimal grandTotal = 0;
+            int totalItems = 0;
+            foreach (Sale sale in salesHistory.Reverse())
+            {
+                Console.WriteLine(sale);
+                grandTotal += sale.TotalPrice;
+                totalItems += sale.Quantity;
+            }
+            Console.WriteLine();
+            Console.WriteLine($"Всего продано единиц товара: {totalItems}");
+            Console.WriteLine($"Общая сумма продаж: {grandTotal:0.00}");
         }
     }
 }
