@@ -17,6 +17,25 @@ namespace Pr1_Expenses
             Console.WriteLine("Учёт потраченных за день средств");
             Console.WriteLine("Верушкин Василий Андреевич, ИСиП-124");
             Console.WriteLine("=================================");
+
+            int count = ReadOperationsCount();
+            Console.WriteLine($"Будет введено операций: {count}");
+        }
+
+        // Считываем количество операций от 2 до 40
+        static int ReadOperationsCount()
+        {
+            int count;
+            while (true)
+            {
+                Console.Write("Введите количество операций (от 2 до 40): ");
+                string input = Console.ReadLine();
+                if (int.TryParse(input, out count) && count >= 2 && count <= 40)
+                {
+                    return count;
+                }
+                Console.WriteLine("Некорректное значение. Введите целое число от 2 до 40.");
+            }
         }
     }
 }
