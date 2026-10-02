@@ -15,6 +15,7 @@ namespace Pr3_TextAnalyzer
 
             string text = TextInput.ReadText();
             Console.WriteLine($"Принят текст длиной {text.Length} символов.");
+            Console.WriteLine($"Количество слов: {TextProcessor.CountWords(text)}");
         }
     }
 }
