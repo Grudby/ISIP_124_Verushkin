@@ -8,6 +8,7 @@ namespace Pr2_StoreInventory
     class Program
     {
         static List<Product> products = new List<Product>();
+        static Stack<Sale> salesHistory = new Stack<Sale>();
         static int nextCode = 1;
 
         static void Main()
@@ -34,6 +35,12 @@ namespace Pr2_StoreInventory
                             break;
                         case "2":
                             DeleteProduct();
+                            break;
+                        case "3":
+                            OrderSupply();
+                            break;
+                        case "4":
+                            SellProduct();
                             break;
                         case "6":
                             ShowAllProducts();
@@ -70,6 +77,8 @@ namespace Pr2_StoreInventory
             Console.WriteLine("Верушкин Василий Андреевич, ИСиП-124");
             Console.WriteLine("1. Добавить товар");
             Console.WriteLine("2. Удалить товар");
+            Console.WriteLine("3. Заказать поставку товара");
+            Console.WriteLine("4. Продать товар");
             Console.WriteLine("6. Показать все товары");
             Console.WriteLine("0. Выход");
             Console.Write("Выберите пункт меню: ");
@@ -183,6 +192,54 @@ namespace Pr2_StoreInventory
             }
             products.Remove(product);
             Console.WriteLine($"Товар \"{product.Name}\" удалён.");
+        }
+
+        static void OrderSupply()
+        {
+            Console.WriteLine("--- Заказ поставки товара ---");
+            int code = ReadNonNegativeInt("Введите код товара: ");
+            Product product = products.FirstOrDefault(p => p.Code == code);
+            if (product == null)
+            {
+                Console.WriteLine("Товар с таким кодом не найден.");
+                return;
+            }
+            int amount = ReadNonNegativeInt("Количество для поставки: ");
+            product.Quantity += amount;
+            Console.WriteLine($"Поставка выполнена. Новое количество \"{product.Name}\": {product.Quantity}.");
+        }
+
+        static void SellProduct()
+        {
+            Console.WriteLine("--- Продажа товара ---");
+            int code = ReadNonNegativeInt("Введите код товара: ");
+            Product product = products.FirstOrDefault(p => p.Code == code);
+            if (product == null)
+            {
+                Console.WriteLine("Товар с таким кодом не найден.");
+                return;
+            }
+            if (!product.InStock)
+            {
+                Console.WriteLine($"Товара \"{product.Name}\" нет на складе.");
+                return;
+            }
+            int amount = ReadNonNegativeInt("Количество для продажи: ");
+            if (amount == 0)
+            {
+                Console.WriteLine("Количество продажи должно быть больше нуля.");
+                return;
+            }
+            if (amount > product.Quantity)
+            {
+                Console.WriteLine($"Недостаточно товара на складе. Доступно: {product.Quantity}.");
+                return;
+            }
+            product.Quantity -= amount;
+            decimal total = product.Price * amount;
+            Sale sale = new Sale { Product = product, Quantity = amount, TotalPrice = total, Date = DateTime.Now };
+            salesHistory.Push(sale);
+            Console.WriteLine($"Продано {amount} шт. \"{product.Name}\" на сумму {total:0.00}.");
         }
     }
 }
