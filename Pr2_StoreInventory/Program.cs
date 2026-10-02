@@ -29,6 +29,12 @@ namespace Pr2_StoreInventory
                 {
                     switch (choice)
                     {
+                        case "1":
+                            AddProduct();
+                            break;
+                        case "2":
+                            DeleteProduct();
+                            break;
                         case "6":
                             ShowAllProducts();
                             break;
@@ -62,6 +68,8 @@ namespace Pr2_StoreInventory
                 Console.Clear();
             Console.WriteLine("===== УЧЁТ ТОВАРОВ В МАГАЗИНЕ =====");
             Console.WriteLine("Верушкин Василий Андреевич, ИСиП-124");
+            Console.WriteLine("1. Добавить товар");
+            Console.WriteLine("2. Удалить товар");
             Console.WriteLine("6. Показать все товары");
             Console.WriteLine("0. Выход");
             Console.Write("Выберите пункт меню: ");
@@ -141,6 +149,40 @@ namespace Pr2_StoreInventory
             }
             foreach (Product p in products.OrderBy(p => p.Code))
                 Console.WriteLine(p);
+        }
+
+        static void AddProduct()
+        {
+            Console.WriteLine("--- Добавление товара ---");
+            string name = ReadNonEmptyString("Название товара: ");
+            decimal price = ReadNonNegativeDecimal("Цена товара: ");
+            int quantity = ReadNonNegativeInt("Количество товара: ");
+            Category category = ReadCategory();
+
+            Product product = new Product
+            {
+                Code = nextCode++,
+                Name = name,
+                Price = price,
+                Quantity = quantity,
+                Category = category
+            };
+            products.Add(product);
+            Console.WriteLine($"Товар добавлен с кодом {product.Code}.");
+        }
+
+        static void DeleteProduct()
+        {
+            Console.WriteLine("--- Удаление товара ---");
+            int code = ReadNonNegativeInt("Введите код товара для удаления: ");
+            Product product = products.FirstOrDefault(p => p.Code == code);
+            if (product == null)
+            {
+                Console.WriteLine("Товар с таким кодом не найден.");
+                return;
+            }
+            products.Remove(product);
+            Console.WriteLine($"Товар \"{product.Name}\" удалён.");
         }
     }
 }
