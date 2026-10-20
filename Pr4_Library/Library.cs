@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -35,6 +36,30 @@ namespace Pr4_Library
         {
             Book? book = FindById(id);
             return book != null && books.Remove(book);
+        }
+
+        public IReadOnlyList<Book> FindByTitle(string part)
+        {
+            return books
+                .Where(book => book.Title.Contains(part, StringComparison.OrdinalIgnoreCase))
+                .OrderBy(book => book.Id)
+                .ToList();
+        }
+
+        public IReadOnlyList<Book> FindByAuthor(string part)
+        {
+            return books
+                .Where(book => book.Author.Contains(part, StringComparison.OrdinalIgnoreCase))
+                .OrderBy(book => book.Id)
+                .ToList();
+        }
+
+        public IReadOnlyList<Book> FindByGenre(Genre genre)
+        {
+            return books
+                .Where(book => book.Genre == genre)
+                .OrderBy(book => book.Id)
+                .ToList();
         }
 
         public void SeedTestData()

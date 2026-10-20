@@ -42,6 +42,9 @@ namespace Pr4_Library
                 Console.WriteLine("1 - Показать все книги");
                 Console.WriteLine("2 - Добавить книгу");
                 Console.WriteLine("3 - Удалить книгу по ID");
+                Console.WriteLine("4 - Найти книги по названию");
+                Console.WriteLine("5 - Найти книги по автору");
+                Console.WriteLine("6 - Найти книги по жанру");
                 Console.WriteLine("0 - Выход");
                 Console.Write("Выберите пункт: ");
 
@@ -58,6 +61,18 @@ namespace Pr4_Library
                         break;
                     case "3":
                         RemoveBook();
+                        break;
+                    case "4":
+                        string title = InputHelper.ReadString("Введите название или его часть: ");
+                        PrintBooks(Library.FindByTitle(title), $"Поиск по названию \"{title}\"");
+                        break;
+                    case "5":
+                        string author = InputHelper.ReadString("Введите автора или часть имени: ");
+                        PrintBooks(Library.FindByAuthor(author), $"Поиск по автору \"{author}\"");
+                        break;
+                    case "6":
+                        Genre genre = InputHelper.ReadGenre();
+                        PrintBooks(Library.FindByGenre(genre), $"Книги жанра \"{GenreNames.GetName(genre)}\"");
                         break;
                     case "0":
                         return;
