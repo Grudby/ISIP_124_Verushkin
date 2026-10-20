@@ -91,6 +91,7 @@ namespace Marketplace
             Console.WriteLine("4 - Убрать товар из корзины");
             Console.WriteLine("5 - Купить один товар из корзины");
             Console.WriteLine("6 - Оформить всю корзину");
+            Console.WriteLine("7 - История заказов");
             Console.WriteLine("9 - Выйти из аккаунта");
             Console.WriteLine("0 - Выход");
             Console.Write("Выберите пункт: ");
@@ -116,6 +117,9 @@ namespace Marketplace
                     break;
                 case "6":
                     BuyWholeCart();
+                    break;
+                case "7":
+                    ShowOrderHistory();
                     break;
                 case "9":
                     Console.WriteLine($"Вы вышли из аккаунта {currentUser.Login}.");
@@ -278,6 +282,34 @@ namespace Marketplace
 
             Console.WriteLine($"Заказ №{order.Id} оформлен на сумму {OrderService.GetTotal(order):0.00} руб.");
             Console.WriteLine($"Забрать: {point.Address}");
+        }
+
+        private static void ShowOrderHistory()
+        {
+            Console.WriteLine("Сортировка по дате:");
+            Console.WriteLine("1 - Сначала новые");
+            Console.WriteLine("2 - Сначала старые");
+            bool newestFirst = InputHelper.ReadInt("Выберите (1-2): ", 1, 2) == 1;
+
+            List<Order> orders = OrderService.GetOrders(currentUser!.Id, newestFirst);
+            Console.WriteLine();
+            Console.WriteLine("=== История заказов ===");
+            if (orders.Count == 0)
+            {
+                Console.WriteLine("Вы ещё ничего не заказывали.");
+                return;
+            }
+
+            foreach (Order order in orders)
+            {
+                Console.WriteLine($"Заказ №{order.Id} от {order.CreatedAt:dd.MM.yyyy HH:mm:ss} | ПВЗ: {order.PickupPoint!.Address}");
+                foreach (OrderProduct item in order.OrderProducts)
+                {
+                    Console.WriteLine($"   {item.Product!.Name} - {item.Price:0.00} руб. x {item.Quantity}");
+                }
+                Console.WriteLine($"   Сумма: {OrderService.GetTotal(order):0.00} руб.");
+            }
+            Console.WriteLine($"Всего заказов: {orders.Count}");
         }
 
         private static void Register()
