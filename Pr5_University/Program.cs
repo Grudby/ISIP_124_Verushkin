@@ -52,6 +52,7 @@ namespace Pr5_University
                 Console.WriteLine("10 - Записать студента на курс");
                 Console.WriteLine("11 - Курсы студента");
                 Console.WriteLine("12 - Назначить преподавателя на курс");
+                Console.WriteLine("13 - Все участники учебного процесса");
                 Console.WriteLine("0 - Выход");
                 Console.Write("Выберите пункт: ");
 
@@ -97,6 +98,9 @@ namespace Pr5_University
                             break;
                         case "12":
                             AssignTeacher();
+                            break;
+                        case "13":
+                            PrintList(University.GetAllPeople(), "Все участники учебного процесса");
                             break;
                         case "0":
                             return;
