@@ -26,6 +26,17 @@ namespace Pr4_Library
             return book;
         }
 
+        public Book? FindById(int id)
+        {
+            return books.FirstOrDefault(book => book.Id == id);
+        }
+
+        public bool Remove(int id)
+        {
+            Book? book = FindById(id);
+            return book != null && books.Remove(book);
+        }
+
         public void SeedTestData()
         {
             Add("Преступление и наказание", "Фёдор Достоевский", Genre.Novel, 1866, 450m);
