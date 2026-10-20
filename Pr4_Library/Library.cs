@@ -72,6 +72,26 @@ namespace Pr4_Library
             return books.OrderBy(book => book.Year).ThenBy(book => book.Title).ToList();
         }
 
+        public Book? GetMostExpensive()
+        {
+            return books.OrderByDescending(book => book.Price).FirstOrDefault();
+        }
+
+        public Book? GetCheapest()
+        {
+            return books.OrderBy(book => book.Price).FirstOrDefault();
+        }
+
+        public IReadOnlyList<(string Author, int Count)> GroupByAuthor()
+        {
+            return books
+                .GroupBy(book => book.Author)
+                .Select(group => (Author: group.Key, Count: group.Count()))
+                .OrderByDescending(item => item.Count)
+                .ThenBy(item => item.Author)
+                .ToList();
+        }
+
         public void SeedTestData()
         {
             Add("Преступление и наказание", "Фёдор Достоевский", Genre.Novel, 1866, 450m);

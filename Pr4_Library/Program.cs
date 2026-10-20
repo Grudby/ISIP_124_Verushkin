@@ -47,6 +47,8 @@ namespace Pr4_Library
                 Console.WriteLine("6 - Найти книги по жанру");
                 Console.WriteLine("7 - Отсортировать по названию");
                 Console.WriteLine("8 - Отсортировать по году издания");
+                Console.WriteLine("9 - Самая дорогая и самая дешёвая книга");
+                Console.WriteLine("10 - Количество книг по авторам");
                 Console.WriteLine("0 - Выход");
                 Console.Write("Выберите пункт: ");
 
@@ -81,6 +83,12 @@ namespace Pr4_Library
                         break;
                     case "8":
                         PrintBooks(Library.SortByYear(), "Книги по году издания");
+                        break;
+                    case "9":
+                        ShowPriceExtremes();
+                        break;
+                    case "10":
+                        ShowAuthors();
                         break;
                     case "0":
                         return;
@@ -123,6 +131,38 @@ namespace Pr4_Library
 
             Library.Remove(id);
             Console.WriteLine($"Удалена книга: {book}");
+        }
+
+        private static void ShowPriceExtremes()
+        {
+            Book? mostExpensive = Library.GetMostExpensive();
+            Book? cheapest = Library.GetCheapest();
+            if (mostExpensive == null || cheapest == null)
+            {
+                Console.WriteLine("Библиотека пуста.");
+                return;
+            }
+
+            Console.WriteLine("Самая дорогая книга:");
+            Console.WriteLine(mostExpensive);
+            Console.WriteLine("Самая дешёвая книга:");
+            Console.WriteLine(cheapest);
+        }
+
+        private static void ShowAuthors()
+        {
+            var authors = Library.GroupByAuthor();
+            if (authors.Count == 0)
+            {
+                Console.WriteLine("Библиотека пуста.");
+                return;
+            }
+
+            Console.WriteLine("=== Книги по авторам ===");
+            foreach (var item in authors)
+            {
+                Console.WriteLine($"{item.Author}: {item.Count} шт.");
+            }
         }
 
         private static void PrintBooks(IReadOnlyCollection<Book> books, string title)
