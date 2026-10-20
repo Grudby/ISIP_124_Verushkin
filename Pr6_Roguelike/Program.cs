@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Text;
 
 namespace Pr6_Roguelike
@@ -35,8 +36,10 @@ namespace Pr6_Roguelike
                 Console.WriteLine();
                 Console.WriteLine("1 - Следующий ход");
                 Console.WriteLine("2 - Состояние героя");
+                Console.WriteLine("3 - Сохранить прогресс");
+                Console.WriteLine("4 - Загрузить прогресс");
                 Console.WriteLine("0 - Выход");
-                string choice = InputHelper.ReadChoice("Выберите пункт: ", "1", "2", "0");
+                string choice = InputHelper.ReadChoice("Выберите пункт: ", "1", "2", "3", "4", "0");
 
                 switch (choice)
                 {
@@ -51,10 +54,43 @@ namespace Pr6_Roguelike
                     case "2":
                         game.PrintStatus();
                         break;
+                    case "3":
+                        SaveGame();
+                        break;
+                    case "4":
+                        LoadGame();
+                        break;
                     case "0":
                         return;
                 }
             }
+        }
+
+        private static void SaveGame()
+        {
+            try
+            {
+                SaveManager.Save(game);
+                Console.WriteLine($"Прогресс сохранён в файл {SaveManager.FileName} (ход {game.Turn}).");
+            }
+            catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException)
+            {
+                Console.WriteLine($"Не удалось сохранить: {ex.Message}");
+            }
+        }
+
+        private static void LoadGame()
+        {
+            Game? loaded = SaveManager.Load(out string error);
+            if (loaded == null)
+            {
+                Console.WriteLine(error);
+                return;
+            }
+
+            game = loaded;
+            Console.WriteLine("Прогресс загружен.");
+            game.PrintStatus();
         }
 
         private static void ShowGameOver()
