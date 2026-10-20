@@ -49,6 +49,7 @@ namespace Pr4_Library
                 Console.WriteLine("8 - Отсортировать по году издания");
                 Console.WriteLine("9 - Самая дорогая и самая дешёвая книга");
                 Console.WriteLine("10 - Количество книг по авторам");
+                Console.WriteLine("11 - Вставить блок книг");
                 Console.WriteLine("0 - Выход");
                 Console.Write("Выберите пункт: ");
 
@@ -89,6 +90,9 @@ namespace Pr4_Library
                         break;
                     case "10":
                         ShowAuthors();
+                        break;
+                    case "11":
+                        ImportBooks();
                         break;
                     case "0":
                         return;
@@ -163,6 +167,77 @@ namespace Pr4_Library
             {
                 Console.WriteLine($"{item.Author}: {item.Count} шт.");
             }
+        }
+
+        private static void ImportBooks()
+        {
+            Console.WriteLine("=== Пакетный импорт ===");
+            Console.WriteLine("Вставьте строки в формате: Название;Автор;Жанр;Год;Цена");
+            Console.WriteLine("Жанр можно указать номером или названием. Для завершения оставьте пустую строку:");
+
+            int added = 0;
+            int lineNumber = 0;
+            while (true)
+            {
+                string line = InputHelper.ReadLine().Trim();
+                if (line.Length == 0)
+                {
+                    break;
+                }
+                lineNumber++;
+
+                if (TryParseBookLine(line, out string error))
+                {
+                    added++;
+                }
+                else
+                {
+                    Console.WriteLine($"Строка {lineNumber} пропущена: {error}");
+                }
+            }
+
+            Console.WriteLine($"Добавлено книг: {added} из {lineNumber}.");
+        }
+
+        private static bool TryParseBookLine(string line, out string error)
+        {
+            string[] parts = line.Split(';');
+            if (parts.Length != 5)
+            {
+                error = "нужно 5 значений через ';'.";
+                return false;
+            }
+
+            string title = parts[0].Trim();
+            string author = parts[1].Trim();
+            if (title.Length == 0 || author.Length == 0)
+            {
+                error = "название и автор не могут быть пустыми.";
+                return false;
+            }
+
+            if (!GenreNames.TryParse(parts[2], out Genre genre))
+            {
+                error = $"неизвестный жанр \"{parts[2].Trim()}\".";
+                return false;
+            }
+
+            if (!int.TryParse(parts[3].Trim(), out int year) || year < MinYear || year > DateTime.Now.Year)
+            {
+                error = $"год должен быть от {MinYear} до {DateTime.Now.Year}.";
+                return false;
+            }
+
+            if (!InputHelper.TryParsePrice(parts[4], out decimal price))
+            {
+                error = "цена должна быть положительным числом.";
+                return false;
+            }
+
+            Book book = Library.Add(title, author, genre, year, price);
+            Console.WriteLine($"Добавлена: {book}");
+            error = string.Empty;
+            return true;
         }
 
         private static void PrintBooks(IReadOnlyCollection<Book> books, string title)
