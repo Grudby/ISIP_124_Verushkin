@@ -48,6 +48,10 @@ namespace Pr5_University
                 Console.WriteLine("7 - Создать курс");
                 Console.WriteLine("8 - Все курсы");
                 Console.WriteLine("9 - Информация о курсе и его студенты");
+                Console.WriteLine("===== Учебный процесс =====");
+                Console.WriteLine("10 - Записать студента на курс");
+                Console.WriteLine("11 - Курсы студента");
+                Console.WriteLine("12 - Назначить преподавателя на курс");
                 Console.WriteLine("0 - Выход");
                 Console.Write("Выберите пункт: ");
 
@@ -84,6 +88,15 @@ namespace Pr5_University
                             break;
                         case "9":
                             ShowCourse();
+                            break;
+                        case "10":
+                            EnrollStudent();
+                            break;
+                        case "11":
+                            ShowStudentCourses();
+                            break;
+                        case "12":
+                            AssignTeacher();
                             break;
                         case "0":
                             return;
@@ -234,6 +247,63 @@ namespace Pr5_University
                 Console.WriteLine($"Курс с ID {id} не найден.");
             }
             return course;
+        }
+
+        private static void EnrollStudent()
+        {
+            Student? student = SelectStudent();
+            if (student == null)
+            {
+                return;
+            }
+
+            Course? course = SelectCourse();
+            if (course == null)
+            {
+                return;
+            }
+
+            if (course.Enroll(student))
+            {
+                Console.WriteLine($"{student.FullName} записан(а) на курс \"{course.Title}\".");
+            }
+            else
+            {
+                Console.WriteLine("Студент уже записан на этот курс.");
+            }
+        }
+
+        private static void ShowStudentCourses()
+        {
+            Student? student = SelectStudent();
+            if (student != null)
+            {
+                PrintList(student.Courses, $"Курсы студента {student.FullName}");
+            }
+        }
+
+        private static void AssignTeacher()
+        {
+            Course? course = SelectCourse();
+            if (course == null)
+            {
+                return;
+            }
+
+            Teacher? teacher = SelectTeacher();
+            if (teacher == null)
+            {
+                return;
+            }
+
+            if (course.Teacher == teacher)
+            {
+                Console.WriteLine("Этот преподаватель уже ведёт курс.");
+                return;
+            }
+
+            course.AssignTeacher(teacher);
+            Console.WriteLine($"Курс \"{course.Title}\" теперь ведёт {teacher.FullName}.");
         }
 
         private static void PrintList<T>(IReadOnlyCollection<T> items, string title)
