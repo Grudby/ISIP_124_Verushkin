@@ -19,8 +19,8 @@ namespace Pr6_Roguelike
 
         public Player()
             : this(StartMaxHp, StartMaxHp,
-                   new Weapon("Ржавый меч", Rarity.Common, 10),
-                   new Armor("Кожаная куртка", Rarity.Common, 4))
+                   new Weapon("Ржавый меч", Rarity.Common, 12),
+                   new Armor("Кожаная куртка", Rarity.Common, 5))
         {
         }
 
