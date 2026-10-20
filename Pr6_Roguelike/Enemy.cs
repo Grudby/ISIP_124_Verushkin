@@ -33,6 +33,11 @@ namespace Pr6_Roguelike
             Defense = defense;
         }
 
+        protected static int Scale(int value, double multiplier)
+        {
+            return (int)Math.Round(value * multiplier);
+        }
+
         public int TakeHit(int attack)
         {
             int damage = Math.Max(1, attack - Defense);

@@ -1,5 +1,3 @@
-using System;
-
 namespace Pr6_Roguelike
 {
     public class Goblin : Enemy
@@ -20,11 +18,6 @@ namespace Pr6_Roguelike
             : base(name, Scale(BaseHp, hpMultiplier), Scale(BaseAttack, attackMultiplier), Scale(BaseDefense, defenseMultiplier))
         {
         }
-
-        protected static int Scale(int value, double multiplier)
-        {
-            return (int)Math.Round(value * multiplier);
-        }
     }
 
     public class Skeleton : Enemy
@@ -41,8 +34,7 @@ namespace Pr6_Roguelike
         }
 
         protected Skeleton(string name, double hpMultiplier, double attackMultiplier, double defenseMultiplier)
-            : base(name, (int)Math.Round(BaseHp * hpMultiplier), (int)Math.Round(BaseAttack * attackMultiplier),
-                   (int)Math.Round(BaseDefense * defenseMultiplier))
+            : base(name, Scale(BaseHp, hpMultiplier), Scale(BaseAttack, attackMultiplier), Scale(BaseDefense, defenseMultiplier))
         {
         }
     }
@@ -62,8 +54,7 @@ namespace Pr6_Roguelike
         }
 
         protected Mage(string name, double hpMultiplier, double attackMultiplier, double defenseMultiplier)
-            : base(name, (int)Math.Round(BaseHp * hpMultiplier), (int)Math.Round(BaseAttack * attackMultiplier),
-                   (int)Math.Round(BaseDefense * defenseMultiplier))
+            : base(name, Scale(BaseHp, hpMultiplier), Scale(BaseAttack, attackMultiplier), Scale(BaseDefense, defenseMultiplier))
         {
         }
     }
