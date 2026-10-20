@@ -62,6 +62,16 @@ namespace Pr4_Library
                 .ToList();
         }
 
+        public IReadOnlyList<Book> SortByTitle()
+        {
+            return books.OrderBy(book => book.Title, StringComparer.CurrentCultureIgnoreCase).ToList();
+        }
+
+        public IReadOnlyList<Book> SortByYear()
+        {
+            return books.OrderBy(book => book.Year).ThenBy(book => book.Title).ToList();
+        }
+
         public void SeedTestData()
         {
             Add("Преступление и наказание", "Фёдор Достоевский", Genre.Novel, 1866, 450m);

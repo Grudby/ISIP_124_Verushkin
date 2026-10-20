@@ -45,6 +45,8 @@ namespace Pr4_Library
                 Console.WriteLine("4 - Найти книги по названию");
                 Console.WriteLine("5 - Найти книги по автору");
                 Console.WriteLine("6 - Найти книги по жанру");
+                Console.WriteLine("7 - Отсортировать по названию");
+                Console.WriteLine("8 - Отсортировать по году издания");
                 Console.WriteLine("0 - Выход");
                 Console.Write("Выберите пункт: ");
 
@@ -73,6 +75,12 @@ namespace Pr4_Library
                     case "6":
                         Genre genre = InputHelper.ReadGenre();
                         PrintBooks(Library.FindByGenre(genre), $"Книги жанра \"{GenreNames.GetName(genre)}\"");
+                        break;
+                    case "7":
+                        PrintBooks(Library.SortByTitle(), "Книги по названию (А-Я)");
+                        break;
+                    case "8":
+                        PrintBooks(Library.SortByYear(), "Книги по году издания");
                         break;
                     case "0":
                         return;
