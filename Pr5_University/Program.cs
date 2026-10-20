@@ -40,6 +40,10 @@ namespace Pr5_University
                 Console.WriteLine("1 - Добавить студента");
                 Console.WriteLine("2 - Все студенты");
                 Console.WriteLine("3 - Информация о студенте");
+                Console.WriteLine("===== Преподаватели =====");
+                Console.WriteLine("4 - Добавить преподавателя");
+                Console.WriteLine("5 - Все преподаватели");
+                Console.WriteLine("6 - Информация о преподавателе");
                 Console.WriteLine("0 - Выход");
                 Console.Write("Выберите пункт: ");
 
@@ -58,6 +62,15 @@ namespace Pr5_University
                             break;
                         case "3":
                             ShowStudent();
+                            break;
+                        case "4":
+                            AddTeacher();
+                            break;
+                        case "5":
+                            PrintList(University.Teachers, "Все преподаватели");
+                            break;
+                        case "6":
+                            ShowTeacher();
                             break;
                         case "0":
                             return;
@@ -115,6 +128,51 @@ namespace Pr5_University
                 Console.WriteLine($"Студент с ID {id} не найден.");
             }
             return student;
+        }
+
+        private static void AddTeacher()
+        {
+            Console.WriteLine("=== Новый преподаватель ===");
+            string fullName = InputHelper.ReadString("ФИО: ");
+            int age = InputHelper.ReadInt("Возраст (20-100): ", 20, 100);
+            string email = InputHelper.ReadEmail("Email: ");
+            string phone = InputHelper.ReadPhone("Телефон: ");
+            string department = InputHelper.ReadString("Кафедра: ");
+            int experience = InputHelper.ReadInt($"Стаж в годах (0-{age - 18}): ", 0, age - 18);
+
+            Teacher teacher = University.AddTeacher(fullName, age, email, phone, department, experience);
+            Console.WriteLine("Преподаватель добавлен:");
+            Console.WriteLine(teacher.GetInfo());
+        }
+
+        private static void ShowTeacher()
+        {
+            Teacher? teacher = SelectTeacher();
+            if (teacher != null)
+            {
+                Console.WriteLine(teacher.GetInfo());
+            }
+        }
+
+        private static Teacher? SelectTeacher()
+        {
+            if (University.Teachers.Count == 0)
+            {
+                Console.WriteLine("Преподавателей нет.");
+                return null;
+            }
+
+            foreach (Teacher item in University.Teachers)
+            {
+                Console.WriteLine($"  {item.Id} - {item.FullName} ({item.Department})");
+            }
+            int id = InputHelper.ReadInt("Введите ID преподавателя: ", 1, int.MaxValue);
+            Teacher? teacher = University.FindTeacher(id);
+            if (teacher == null)
+            {
+                Console.WriteLine($"Преподаватель с ID {id} не найден.");
+            }
+            return teacher;
         }
 
         private static void PrintList<T>(IReadOnlyCollection<T> items, string title)
