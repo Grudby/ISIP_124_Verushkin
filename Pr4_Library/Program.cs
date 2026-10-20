@@ -9,6 +9,7 @@ namespace Pr4_Library
         public const int MinYear = 1450;
 
         private static readonly Library Library = new Library();
+        private static readonly Cart Cart = new Cart();
 
         private static void Main()
         {
@@ -50,6 +51,10 @@ namespace Pr4_Library
                 Console.WriteLine("9 - Самая дорогая и самая дешёвая книга");
                 Console.WriteLine("10 - Количество книг по авторам");
                 Console.WriteLine("11 - Вставить блок книг");
+                Console.WriteLine("12 - Добавить книгу в корзину");
+                Console.WriteLine("13 - Показать корзину и итоговую стоимость");
+                Console.WriteLine("14 - Убрать книгу из корзины");
+                Console.WriteLine("15 - Оформить покупку");
                 Console.WriteLine("0 - Выход");
                 Console.Write("Выберите пункт: ");
 
@@ -94,6 +99,18 @@ namespace Pr4_Library
                     case "11":
                         ImportBooks();
                         break;
+                    case "12":
+                        AddToCart();
+                        break;
+                    case "13":
+                        ShowCart();
+                        break;
+                    case "14":
+                        RemoveFromCart();
+                        break;
+                    case "15":
+                        Checkout();
+                        break;
                     case "0":
                         return;
                     default:
@@ -134,6 +151,7 @@ namespace Pr4_Library
             }
 
             Library.Remove(id);
+            Cart.Remove(id);
             Console.WriteLine($"Удалена книга: {book}");
         }
 
@@ -238,6 +256,77 @@ namespace Pr4_Library
             Console.WriteLine($"Добавлена: {book}");
             error = string.Empty;
             return true;
+        }
+
+        private static void AddToCart()
+        {
+            if (Library.Count == 0)
+            {
+                Console.WriteLine("Библиотека пуста.");
+                return;
+            }
+
+            int id = InputHelper.ReadInt("Введите ID книги: ", 1, int.MaxValue);
+            Book? book = Library.FindById(id);
+            if (book == null)
+            {
+                Console.WriteLine($"Книга с ID {id} не найдена.");
+                return;
+            }
+
+            int quantity = InputHelper.ReadInt("Количество (1-100): ", 1, 100);
+            Cart.Add(book, quantity);
+            Console.WriteLine($"В корзину добавлено: \"{book.Title}\" x{quantity}");
+        }
+
+        private static void ShowCart()
+        {
+            Console.WriteLine("=== Корзина ===");
+            if (Cart.IsEmpty)
+            {
+                Console.WriteLine("Корзина пуста.");
+                return;
+            }
+
+            foreach (CartItem item in Cart.Items)
+            {
+                Console.WriteLine($"ID: {item.Book.Id} | \"{item.Book.Title}\" | {item.Book.Price:0.00} руб. x {item.Quantity} = {item.Sum:0.00} руб.");
+            }
+            Console.WriteLine($"Итого: {Cart.Total:0.00} руб.");
+        }
+
+        private static void RemoveFromCart()
+        {
+            if (Cart.IsEmpty)
+            {
+                Console.WriteLine("Корзина пуста.");
+                return;
+            }
+
+            int id = InputHelper.ReadInt("Введите ID книги для удаления из корзины: ", 1, int.MaxValue);
+            Console.WriteLine(Cart.Remove(id) ? "Книга убрана из корзины." : "Этой книги нет в корзине.");
+        }
+
+        private static void Checkout()
+        {
+            if (Cart.IsEmpty)
+            {
+                Console.WriteLine("Корзина пуста.");
+                return;
+            }
+
+            ShowCart();
+            Console.Write("Подтвердить покупку? (да/нет): ");
+            string answer = InputHelper.ReadLine().Trim().ToLower();
+            if (answer == "да" || answer == "д" || answer == "yes" || answer == "y")
+            {
+                Console.WriteLine($"Покупка оформлена на сумму {Cart.Total:0.00} руб.");
+                Cart.Clear();
+            }
+            else
+            {
+                Console.WriteLine("Покупка отменена.");
+            }
         }
 
         private static void PrintBooks(IReadOnlyCollection<Book> books, string title)
