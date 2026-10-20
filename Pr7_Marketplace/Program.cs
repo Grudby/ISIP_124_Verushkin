@@ -86,6 +86,9 @@ namespace Marketplace
         {
             Console.WriteLine($"===== Главное меню ({currentUser!.Login}) =====");
             Console.WriteLine("1 - Каталог товаров");
+            Console.WriteLine("2 - Добавить товар в корзину");
+            Console.WriteLine("3 - Корзина");
+            Console.WriteLine("4 - Убрать товар из корзины");
             Console.WriteLine("9 - Выйти из аккаунта");
             Console.WriteLine("0 - Выход");
             Console.Write("Выберите пункт: ");
@@ -96,6 +99,15 @@ namespace Marketplace
             {
                 case "1":
                     ShowCatalog();
+                    break;
+                case "2":
+                    AddToCart();
+                    break;
+                case "3":
+                    ShowCart();
+                    break;
+                case "4":
+                    RemoveFromCart();
                     break;
                 case "9":
                     Console.WriteLine($"Вы вышли из аккаунта {currentUser.Login}.");
@@ -132,6 +144,72 @@ namespace Marketplace
                 Console.WriteLine($"  {product.Id}. {product.Name} - {product.Price:0.00} руб. ({stock})");
                 Console.WriteLine($"     {product.Description}");
             }
+        }
+
+        private static void AddToCart()
+        {
+            ShowCatalog();
+            Console.WriteLine();
+            int productId = InputHelper.ReadInt("Номер товара: ", 1, int.MaxValue);
+            Product? product = CatalogService.FindProduct(productId);
+            if (product == null)
+            {
+                Console.WriteLine($"Товар с номером {productId} не найден.");
+                return;
+            }
+            if (product.StockQuantity == 0)
+            {
+                Console.WriteLine("Этого товара нет в наличии.");
+                return;
+            }
+
+            int quantity = InputHelper.ReadInt($"Количество (1-{product.StockQuantity}): ", 1, product.StockQuantity);
+            string? error = CartService.AddProduct(currentUser!.Id, productId, quantity);
+            Console.WriteLine(error ?? $"В корзину добавлено: {product.Name} x{quantity}");
+        }
+
+        private static List<CartItem> ShowCart()
+        {
+            List<CartItem> items = CartService.GetItems(currentUser!.Id);
+            Console.WriteLine("=== Корзина ===");
+            if (items.Count == 0)
+            {
+                Console.WriteLine("Корзина пуста.");
+                return items;
+            }
+
+            for (int i = 0; i < items.Count; i++)
+            {
+                CartItem item = items[i];
+                Console.WriteLine($"{i + 1}. {item.Product!.Name} - {item.Product.Price:0.00} руб. x {item.Quantity} = " +
+                                  $"{item.Product.Price * item.Quantity:0.00} руб.");
+            }
+            Console.WriteLine($"Итого: {CartService.GetTotal(items):0.00} руб.");
+            return items;
+        }
+
+        private static CartItem? SelectCartItem(string prompt)
+        {
+            List<CartItem> items = ShowCart();
+            if (items.Count == 0)
+            {
+                return null;
+            }
+
+            int number = InputHelper.ReadInt($"{prompt} (1-{items.Count}): ", 1, items.Count);
+            return items[number - 1];
+        }
+
+        private static void RemoveFromCart()
+        {
+            CartItem? item = SelectCartItem("Номер позиции для удаления");
+            if (item == null)
+            {
+                return;
+            }
+
+            bool removed = CartService.RemoveItem(currentUser!.Id, item.Id);
+            Console.WriteLine(removed ? $"{item.Product!.Name} убран из корзины." : "Позиция не найдена.");
         }
 
         private static void Register()
