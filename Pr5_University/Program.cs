@@ -44,6 +44,10 @@ namespace Pr5_University
                 Console.WriteLine("4 - Добавить преподавателя");
                 Console.WriteLine("5 - Все преподаватели");
                 Console.WriteLine("6 - Информация о преподавателе");
+                Console.WriteLine("===== Курсы =====");
+                Console.WriteLine("7 - Создать курс");
+                Console.WriteLine("8 - Все курсы");
+                Console.WriteLine("9 - Информация о курсе и его студенты");
                 Console.WriteLine("0 - Выход");
                 Console.Write("Выберите пункт: ");
 
@@ -71,6 +75,15 @@ namespace Pr5_University
                             break;
                         case "6":
                             ShowTeacher();
+                            break;
+                        case "7":
+                            AddCourse();
+                            break;
+                        case "8":
+                            PrintList(University.Courses, "Все курсы");
+                            break;
+                        case "9":
+                            ShowCourse();
                             break;
                         case "0":
                             return;
@@ -173,6 +186,54 @@ namespace Pr5_University
                 Console.WriteLine($"Преподаватель с ID {id} не найден.");
             }
             return teacher;
+        }
+
+        private static void AddCourse()
+        {
+            Console.WriteLine("=== Новый курс ===");
+            string title = InputHelper.ReadString("Название курса: ");
+            int hours = InputHelper.ReadInt("Количество часов (1-500): ", 1, 500);
+
+            Course course = University.AddCourse(title, hours);
+            Console.WriteLine("Курс создан:");
+            Console.WriteLine(course);
+        }
+
+        private static void ShowCourse()
+        {
+            Course? course = SelectCourse();
+            if (course == null)
+            {
+                return;
+            }
+
+            Console.WriteLine(course);
+            if (course.Teacher != null)
+            {
+                Console.WriteLine($"Преподаватель: {course.Teacher.GetInfo()}");
+            }
+            PrintList(course.Students, $"Студенты курса \"{course.Title}\"");
+        }
+
+        private static Course? SelectCourse()
+        {
+            if (University.Courses.Count == 0)
+            {
+                Console.WriteLine("Курсов нет.");
+                return null;
+            }
+
+            foreach (Course item in University.Courses)
+            {
+                Console.WriteLine($"  {item.Id} - {item.Title}");
+            }
+            int id = InputHelper.ReadInt("Введите ID курса: ", 1, int.MaxValue);
+            Course? course = University.FindCourse(id);
+            if (course == null)
+            {
+                Console.WriteLine($"Курс с ID {id} не найден.");
+            }
+            return course;
         }
 
         private static void PrintList<T>(IReadOnlyCollection<T> items, string title)
