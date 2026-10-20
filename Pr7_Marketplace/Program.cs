@@ -89,6 +89,8 @@ namespace Marketplace
             Console.WriteLine("2 - Добавить товар в корзину");
             Console.WriteLine("3 - Корзина");
             Console.WriteLine("4 - Убрать товар из корзины");
+            Console.WriteLine("5 - Купить один товар из корзины");
+            Console.WriteLine("6 - Оформить всю корзину");
             Console.WriteLine("9 - Выйти из аккаунта");
             Console.WriteLine("0 - Выход");
             Console.Write("Выберите пункт: ");
@@ -108,6 +110,12 @@ namespace Marketplace
                     break;
                 case "4":
                     RemoveFromCart();
+                    break;
+                case "5":
+                    BuyOneItem();
+                    break;
+                case "6":
+                    BuyWholeCart();
                     break;
                 case "9":
                     Console.WriteLine($"Вы вышли из аккаунта {currentUser.Login}.");
@@ -210,6 +218,66 @@ namespace Marketplace
 
             bool removed = CartService.RemoveItem(currentUser!.Id, item.Id);
             Console.WriteLine(removed ? $"{item.Product!.Name} убран из корзины." : "Позиция не найдена.");
+        }
+
+        private static void BuyOneItem()
+        {
+            CartItem? item = SelectCartItem("Номер позиции для покупки");
+            if (item != null)
+            {
+                Checkout(new List<int> { item.Id });
+            }
+        }
+
+        private static void BuyWholeCart()
+        {
+            List<CartItem> items = ShowCart();
+            if (items.Count == 0)
+            {
+                return;
+            }
+
+            List<int> ids = new List<int>();
+            foreach (CartItem item in items)
+            {
+                ids.Add(item.Id);
+            }
+            Checkout(ids);
+        }
+
+        private static void Checkout(List<int> cartItemIds)
+        {
+            List<PickupPoint> points = CatalogService.GetPickupPoints();
+            if (points.Count == 0)
+            {
+                Console.WriteLine("Нет доступных пунктов выдачи.");
+                return;
+            }
+
+            Console.WriteLine();
+            Console.WriteLine("Пункты выдачи заказов:");
+            for (int i = 0; i < points.Count; i++)
+            {
+                Console.WriteLine($"{i + 1}. {points[i].Address} ({points[i].WorkingHours})");
+            }
+            int number = InputHelper.ReadInt($"Выберите ПВЗ (1-{points.Count}): ", 1, points.Count);
+            PickupPoint point = points[number - 1];
+
+            if (!InputHelper.Confirm($"Оформить заказ с получением по адресу {point.Address}?"))
+            {
+                Console.WriteLine("Оформление отменено.");
+                return;
+            }
+
+            Order? order = OrderService.Checkout(currentUser!.Id, cartItemIds, point.Id, out string error);
+            if (order == null)
+            {
+                Console.WriteLine($"Заказ не оформлен: {error}");
+                return;
+            }
+
+            Console.WriteLine($"Заказ №{order.Id} оформлен на сумму {OrderService.GetTotal(order):0.00} руб.");
+            Console.WriteLine($"Забрать: {point.Address}");
         }
 
         private static void Register()
